@@ -48,3 +48,45 @@ exports.nuevoEnlace = async (req,res,next) => {
         
     }
 }
+
+//get link
+exports.obtenerEnlace = async (req,res, next) => {
+
+    const {url} = req.params;
+
+    const enlace = await Enlaces.findOne({ url});
+
+    if(!enlace){
+        res.status(404).json({msg: 'El enlace no existe'});
+        return next();
+    }
+
+    //si existe el link obtengo el nombre del archivo según su url
+    res.json({archivo: enlace.nombre})
+    // console.log(enlace);
+
+    //si las descargas son igual a 1 se elimina el archivo
+    const {descargas, nombre} = enlace;
+    if(descargas === 1){
+        console.log('solo 1');
+
+        //eliminar archivo
+        req.archivo = nombre;
+        
+        //eliminar de bd
+        await Enlaces.findOneAndRemove(req.params.url);
+        next(); //para pasar al siguiente controlador -> archivosController.eliminarArchivo
+
+
+        
+    }else {
+         //si descargas > 1 restar descargas--
+         enlace.descargas--;
+         await enlace.save();
+        console.log('Aún hay descargas')
+    }
+
+   
+
+
+}
