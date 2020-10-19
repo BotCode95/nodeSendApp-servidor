@@ -25,9 +25,8 @@ exports.nuevoUsuario = async ( req,res) => {
     const salt = await bcrypt.genSalt(10);
     usuario.password = await bcrypt.hash(password, salt);
     try {
-        
-    await usuario.save();
-    res.json({msg: 'Usuario creado correctamente'})
+        await usuario.save();
+        res.json({msg: 'Usuario creado correctamente'})
     } catch (error) {
         console.log(error);    
     }
