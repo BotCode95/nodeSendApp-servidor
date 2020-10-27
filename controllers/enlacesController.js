@@ -65,12 +65,15 @@ exports.obtenerEnlace = async (req,res, next) => {
 
     //si existe el link obtengo el nombre del archivo según su url
     res.json({archivo: enlace.nombre})
-    // console.log(enlace);
+
+    return; //evitar la eliminacion de la url
+    //al tener permitido una descarga luego de visitarla se borra
+    
 
     //si las descargas son igual a 1 se elimina el archivo
     const {descargas, nombre} = enlace;
     if(descargas === 1){
-        console.log('solo 1');
+        // console.log('solo 1');
 
         //eliminar archivo
         req.archivo = nombre;
@@ -88,7 +91,14 @@ exports.obtenerEnlace = async (req,res, next) => {
         console.log('Aún hay descargas')
     }
 
-   
+}
 
-
+//obtiene un listado de todos los enlaces
+exports.todosEnlaces = async (req,res) => {
+    try {
+        const enlaces = await Enlaces.find({}).select('url -_id');
+        res.json({enlaces});
+    } catch (error) {
+        console.log(error);
+    }
 }

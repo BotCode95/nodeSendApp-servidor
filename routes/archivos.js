@@ -10,6 +10,9 @@ router.post('/',
 );
 
 
+router.get('/:archivo',
+archivosController.descargar)
+
 
 module.exports = router;
 
