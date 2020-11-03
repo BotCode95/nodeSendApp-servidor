@@ -51,6 +51,50 @@ exports.nuevoEnlace = async (req,res,next) => {
     }
 }
 
+//retorna si el enlace tiene password o no
+exports.tienePassword = async (req,res,next) => {
+
+        const {url} = req.params;
+        console.log(url);
+
+        //verificar si existe el enlace
+        const enlace = await Enlaces.findOne({url});
+
+        if(!enlace){
+            res.status(404).json({msg: 'Ese enlace no existe'});
+            return next();
+        }
+
+        if(enlace.password) {
+            return res.json({password: true, enlace: enlace.url});
+        }
+
+        next();
+   
+}
+
+//verifica si el password es correcto
+exports.verificarPassword = async (req,res,next) => {
+    
+    const {url} = req.params;
+    const {password} = req.body;
+    //consultar por el enlace
+    const enlace = await Enlaces.findOne({url});
+
+
+    // verificar el password 
+    if(bcrypt.compareSync(password, enlace.password)){
+        //permitirle al usuario descargar el archivo
+        next();
+    } else {
+        return res.status(401).json({msg: 'contraseña incorrecta'});
+    }
+
+    
+    console.log(req.params);
+    console.log(req.body);
+}
+
 //get link
 exports.obtenerEnlace = async (req,res, next) => {
 
@@ -64,7 +108,8 @@ exports.obtenerEnlace = async (req,res, next) => {
     }
 
     //si existe el link obtengo el nombre del archivo según su url
-    res.json({archivo: enlace.nombre})
+    //password paso como false al obtener el enlace queda como no tengo password o esta correcto
+    res.json({archivo: enlace.nombre, password: false})
 
     //return; //evitar la eliminacion de la url
     //al tener permitido una descarga luego de visitarla se borra
@@ -80,3 +125,4 @@ exports.todosEnlaces = async (req,res) => {
         console.log(error);
     }
 }
+

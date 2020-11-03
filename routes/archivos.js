@@ -11,8 +11,8 @@ router.post('/',
 
 
 router.get('/:archivo',
-archivosController.descargar,
-archivosController.eliminarArchivo,
+    archivosController.descargar,
+    archivosController.eliminarArchivo,
 );
 
 
