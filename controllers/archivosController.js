@@ -79,7 +79,6 @@ exports.descargar = async (req,res, next) =>  {
         //await Enlaces.findOneAndRemove(enlace.id);
         await Enlaces.findOneAndRemove({nombre: nombre}); //check eliminacion en db
         next(); //para pasar al siguiente controlador -> archivosController.eliminarArchivo
-
     }else {
          //si descargas > 1 restar descargas--
          enlace.descargas--;
